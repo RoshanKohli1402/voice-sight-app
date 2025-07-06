@@ -33,6 +33,7 @@ const VoiceApp = () => {
       recognitionRef.current.lang = 'en-US';
 
       recognitionRef.current.onstart = () => {
+        console.log('Speech recognition started');
         setVoiceState('listening');
         setIsListening(true);
       };
@@ -40,6 +41,7 @@ const VoiceApp = () => {
       recognitionRef.current.onresult = (event: any) => {
         const current = event.resultIndex;
         const transcriptText = event.results[current][0].transcript;
+        console.log('Speech recognized:', transcriptText);
         setTranscript(transcriptText);
         
         if (event.results[current].isFinal) {
@@ -47,12 +49,14 @@ const VoiceApp = () => {
         }
       };
 
-      recognitionRef.current.onerror = () => {
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
         setIsListening(false);
         setVoiceState('idle');
       };
 
       recognitionRef.current.onend = () => {
+        console.log('Speech recognition ended');
         setIsListening(false);
         setVoiceState('idle');
       };
@@ -72,6 +76,7 @@ const VoiceApp = () => {
 
   const speak = (text: string) => {
     if (synthRef.current) {
+      console.log('Speaking:', text);
       setVoiceState('speaking');
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.rate = 0.9;
@@ -90,6 +95,7 @@ const VoiceApp = () => {
 
   const startListening = () => {
     if (recognitionRef.current && !isListening) {
+      console.log('Starting to listen...');
       setTranscript('');
       recognitionRef.current.start();
     }
@@ -97,11 +103,13 @@ const VoiceApp = () => {
 
   const stopListening = () => {
     if (recognitionRef.current && isListening) {
+      console.log('Stopping listening...');
       recognitionRef.current.stop();
     }
   };
 
   const handleVoiceCommand = (command: string) => {
+    console.log('Processing command:', command);
     setLastCommand(command);
     setVoiceState('processing');
     
@@ -113,7 +121,7 @@ const VoiceApp = () => {
     } else if (command.includes('currency') || command.includes('money') || command.includes('note') || command.includes('bill')) {
       setMode('currency');
       setShowCamera(true);
-      speak("Opening camera for currency detection. Please place the currency note in front of the camera.");
+      speak("Opening camera for currency detection. Please place the currency note in front of the camera and ensure good lighting.");
     } else if (command.includes('read text') || command.includes('text') || command.includes('reading')) {
       setMode('text');
       setShowCamera(true);
@@ -135,6 +143,7 @@ const VoiceApp = () => {
   };
 
   const simulateAIProcessing = () => {
+    console.log('Starting AI processing for mode:', mode);
     setVoiceState('processing');
     setResult('Processing...');
     
@@ -146,7 +155,7 @@ const VoiceApp = () => {
           aiResult = "I can see a smartphone in your hand. It appears to be a black rectangular device with a screen.";
           break;
         case 'currency':
-          aiResult = "I detected a 100 rupee note. This is a one hundred rupee Indian currency note.";
+          aiResult = "I detected a 100 rupee note. This is a one hundred rupee Indian currency note with security features visible.";
           break;
         case 'text':
           aiResult = "The text reads: Welcome to our store. Opening hours are 9 AM to 8 PM Monday through Saturday.";
@@ -158,6 +167,7 @@ const VoiceApp = () => {
           aiResult = "Processing complete.";
       }
       
+      console.log('AI Result:', aiResult);
       setResult(aiResult);
       speak(aiResult + " Would you like me to try again or help you with something else?");
     }, 3000);
@@ -186,19 +196,19 @@ const VoiceApp = () => {
   const IconComponent = getModeIcon();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 mt-8">
           <div className="mb-4 flex justify-center">
             <div className="relative">
-              <IconComponent className={`w-16 h-16 text-purple-300 transition-all duration-1000 ${voiceState === 'listening' ? 'scale-110 text-purple-200' : 'scale-100'}`} />
+              <IconComponent className={`w-16 h-16 text-yellow-400 transition-all duration-1000 ${voiceState === 'listening' ? 'scale-110 text-yellow-300' : 'scale-100'}`} />
               {voiceState === 'listening' && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   {[...Array(3)].map((_, ring) => (
                     <div
                       key={ring}
-                      className="absolute rounded-full border-2 border-purple-300 animate-ping opacity-75"
+                      className="absolute rounded-full border-2 border-yellow-400 animate-ping opacity-75"
                       style={{
                         width: `${80 + ring * 20}px`,
                         height: `${80 + ring * 20}px`,
@@ -212,21 +222,21 @@ const VoiceApp = () => {
             </div>
           </div>
           
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-purple-300 via-pink-300 to-blue-300 bg-clip-text text-transparent">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white drop-shadow-lg">
             {getModeTitle()}
           </h1>
           
           <div className="flex items-center justify-center space-x-4 mb-4">
-            <div className={`flex items-center space-x-2 px-4 py-2 rounded-full ${
-              voiceState === 'listening' ? 'bg-green-500/20 border border-green-400' :
-              voiceState === 'processing' ? 'bg-yellow-500/20 border border-yellow-400' :
-              voiceState === 'speaking' ? 'bg-blue-500/20 border border-blue-400' :
-              'bg-gray-500/20 border border-gray-400'
+            <div className={`flex items-center space-x-2 px-4 py-2 rounded-full backdrop-blur-sm ${
+              voiceState === 'listening' ? 'bg-green-500/30 border-2 border-green-400' :
+              voiceState === 'processing' ? 'bg-yellow-500/30 border-2 border-yellow-400' :
+              voiceState === 'speaking' ? 'bg-blue-500/30 border-2 border-blue-400' :
+              'bg-gray-500/30 border-2 border-gray-400'
             }`}>
-              {voiceState === 'listening' ? <Mic className="w-5 h-5 text-green-400" /> :
-               voiceState === 'speaking' ? <Volume2 className="w-5 h-5 text-blue-400" /> :
-               <MicOff className="w-5 h-5 text-gray-400" />}
-              <span className="text-sm font-medium">
+              {voiceState === 'listening' ? <Mic className="w-5 h-5 text-green-300" /> :
+               voiceState === 'speaking' ? <Volume2 className="w-5 h-5 text-blue-300" /> :
+               <MicOff className="w-5 h-5 text-gray-300" />}
+              <span className="text-sm font-bold text-white">
                 {voiceState === 'listening' ? 'Listening...' :
                  voiceState === 'processing' ? 'Processing...' :
                  voiceState === 'speaking' ? 'Speaking...' :
@@ -236,16 +246,16 @@ const VoiceApp = () => {
           </div>
 
           {transcript && (
-            <div className="bg-purple-800/30 backdrop-blur-sm rounded-lg p-4 mb-4">
-              <p className="text-purple-200 text-sm mb-1">You said:</p>
-              <p className="text-white font-medium">"{transcript}"</p>
+            <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 mb-4 border border-yellow-400/30">
+              <p className="text-yellow-300 text-sm mb-1 font-semibold">You said:</p>
+              <p className="text-white font-bold text-lg">"{transcript}"</p>
             </div>
           )}
         </div>
 
         {/* Camera View */}
         {showCamera && (
-          <Card className="bg-gradient-to-br from-purple-800/50 to-blue-800/50 border-purple-500/30 backdrop-blur-sm mb-6">
+          <Card className="bg-black/60 backdrop-blur-sm border-2 border-yellow-400/50 mb-6">
             <CardContent className="p-6">
               <CameraView onCapture={simulateAIProcessing} />
             </CardContent>
@@ -254,13 +264,13 @@ const VoiceApp = () => {
 
         {/* Results */}
         {result && (
-          <Card className="bg-gradient-to-br from-green-800/50 to-blue-800/50 border-green-500/30 backdrop-blur-sm mb-6">
+          <Card className="bg-green-900/60 backdrop-blur-sm border-2 border-green-400/50 mb-6">
             <CardContent className="p-6">
               <div className="flex items-start space-x-4">
-                <Volume2 className="w-6 h-6 text-green-400 mt-1" />
+                <Volume2 className="w-6 h-6 text-green-300 mt-1" />
                 <div>
-                  <h3 className="text-lg font-bold text-green-300 mb-2">AI Result:</h3>
-                  <p className="text-white leading-relaxed">{result}</p>
+                  <h3 className="text-lg font-bold text-green-200 mb-2">AI Result:</h3>
+                  <p className="text-white leading-relaxed text-lg font-medium">{result}</p>
                 </div>
               </div>
             </CardContent>
@@ -273,8 +283,8 @@ const VoiceApp = () => {
             onClick={isListening ? stopListening : startListening}
             className={`${
               isListening 
-                ? 'bg-red-600 hover:bg-red-700' 
-                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700'
+                ? 'bg-red-600 hover:bg-red-700 border-2 border-red-400' 
+                : 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 border-2 border-purple-400'
             } text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105`}
           >
             {isListening ? <MicOff className="mr-2 h-5 w-5" /> : <Mic className="mr-2 h-5 w-5" />}
@@ -285,7 +295,7 @@ const VoiceApp = () => {
             <Button
               onClick={() => handleVoiceCommand('go back')}
               variant="outline"
-              className="border-2 border-purple-300 text-purple-300 hover:bg-purple-300 hover:text-purple-900 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105"
+              className="border-2 border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105"
             >
               Go Back to Menu
             </Button>
@@ -293,20 +303,20 @@ const VoiceApp = () => {
         </div>
 
         {/* Voice Commands Help */}
-        <Card className="bg-gradient-to-br from-indigo-800/30 to-purple-800/30 border-indigo-500/30 backdrop-blur-sm mt-8">
+        <Card className="bg-blue-900/40 backdrop-blur-sm border-2 border-blue-400/50 mt-8">
           <CardContent className="p-6">
-            <h3 className="text-xl font-bold text-indigo-300 mb-4 text-center">Voice Commands</h3>
+            <h3 className="text-xl font-bold text-blue-200 mb-4 text-center">Voice Commands</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="space-y-2">
-                <p className="text-purple-200"><strong>"Detect object"</strong> - Identify objects</p>
-                <p className="text-purple-200"><strong>"Read currency"</strong> - Recognize money</p>
+                <p className="text-white font-medium"><strong className="text-yellow-300">"Detect object"</strong> - Identify objects</p>
+                <p className="text-white font-medium"><strong className="text-yellow-300">"Read currency"</strong> - Recognize money</p>
               </div>
               <div className="space-y-2">
-                <p className="text-purple-200"><strong>"Read text"</strong> - Read printed text</p>
-                <p className="text-purple-200"><strong>"Describe scene"</strong> - Describe surroundings</p>
+                <p className="text-white font-medium"><strong className="text-yellow-300">"Read text"</strong> - Read printed text</p>
+                <p className="text-white font-medium"><strong className="text-yellow-300">"Describe scene"</strong> - Describe surroundings</p>
               </div>
             </div>
-            <p className="text-center text-indigo-200 mt-4 text-sm">Say "help" anytime for assistance or "go back" to return to menu</p>
+            <p className="text-center text-blue-200 mt-4 text-sm font-medium">Say <strong className="text-yellow-300">"help"</strong> anytime for assistance or <strong className="text-yellow-300">"go back"</strong> to return to menu</p>
           </CardContent>
         </Card>
       </div>
