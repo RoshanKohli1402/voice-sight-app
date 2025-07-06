@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { Mic, Speaker, Waves, Download, Play, Eye, DollarSign, FileText, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import VoiceWave from "@/components/VoiceWave";
 import FeatureCard from "@/components/FeatureCard";
 import VoiceDemo from "@/components/VoiceDemo";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
@@ -44,6 +46,10 @@ const Index = () => {
     }
   ];
 
+  const handleTryDemo = () => {
+    navigate('/app');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
       {/* Animated Background Elements */}
@@ -77,13 +83,16 @@ const Index = () => {
           </p>
 
           <div className="flex flex-col md:flex-row gap-6 justify-center animate-fade-in delay-700">
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25">
-              <Download className="mr-2 h-5 w-5" />
-              Download APK
+            <Button 
+              onClick={handleTryDemo}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+            >
+              <Play className="mr-2 h-5 w-5" />
+              Try Live Demo
             </Button>
             <Button variant="outline" className="border-2 border-purple-300 text-purple-300 hover:bg-purple-300 hover:text-purple-900 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105">
-              <Play className="mr-2 h-5 w-5" />
-              Try Voice Demo
+              <Download className="mr-2 h-5 w-5" />
+              Download APK
             </Button>
           </div>
         </div>
@@ -107,7 +116,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Grid */}
       <section className="relative z-10 py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-transparent bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text">
@@ -128,7 +136,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Voice Demo Section */}
       <section className="relative z-10 py-20 px-6 bg-gradient-to-r from-indigo-800/30 to-purple-800/30 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 text-transparent bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text">
@@ -138,7 +145,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Offline Section */}
       <section className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-transparent bg-gradient-to-r from-green-300 to-blue-300 bg-clip-text">
@@ -155,7 +161,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Freedom Section */}
       <section className="relative z-10 py-20 px-6 bg-gradient-to-r from-pink-800/30 to-purple-800/30 backdrop-blur-sm">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-8 text-transparent bg-gradient-to-r from-pink-300 to-purple-300 bg-clip-text">
@@ -173,20 +178,22 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Final CTA */}
       <section className="relative z-10 py-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-8 text-white">
             Ready to Transform Your Experience?
           </h2>
           <div className="flex flex-col md:flex-row gap-6 justify-center">
-            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25">
-              <Download className="mr-2 h-5 w-5" />
-              Download Now
+            <Button 
+              onClick={handleTryDemo}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-purple-500/25"
+            >
+              <Play className="mr-2 h-5 w-5" />
+              Try Live Demo
             </Button>
             <Button variant="outline" className="border-2 border-blue-300 text-blue-300 hover:bg-blue-300 hover:text-blue-900 font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105">
-              <Play className="mr-2 h-5 w-5" />
-              Watch in Action
+              <Download className="mr-2 h-5 w-5" />
+              Download APK
             </Button>
           </div>
         </div>
