@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
+# AIVISION
 
-## Project info
+# 🧠 AI Vision Assistant – Empowering the Blind through Voice & Vision
 
-**URL**: https://lovable.dev/projects/93d3eda1-43c4-4bc9-b5c0-6e772109cb2a
+AI Vision Assistant is a voice-operated mobile application designed **exclusively for blind users**. It uses on-device AI to help individuals **identify objects**, **read printed text**, **recognize Indian currency**, and **understand their surroundings** — all through voice commands and **without needing an internet connection**.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 👁️‍🗨️ Purpose
 
-**Use Lovable**
+The app is built with a single vision:
+> To give blind individuals **independence** in navigating their environment — hands-free, touch-free, and confidently.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/93d3eda1-43c4-4bc9-b5c0-6e772109cb2a) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Key Features
 
-**Use your preferred IDE**
+- 🎙️ **Voice Command Interface**  
+  Fully voice-operated — no buttons or visual UI. Users can say commands like:
+  - “Detect object”
+  - “Currency check”
+  - “Read text”
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- 📷 **Real-Time Camera Integration**  
+  Detects surroundings, movement, and items in front of the user.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- 🍎 **Object Recognition**  
+  Identifies everyday items like fruits, vegetables, and tools.
 
-Follow these steps:
+- 💵 **Currency Recognition**  
+  Supports Indian currency notes (₹10, ₹50, ₹100, ₹500) — even when folded or tilted.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- 📖 **Text Reader (OCR)**  
+  Reads books, signs, or documents aloud in regional languages.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- 🗣️ **AI Voice Guidance**  
+  Real-time instructions for camera positioning:  
+  “Move phone closer,” “Unfold the note,” “Hold steady…”
 
-# Step 3: Install the necessary dependencies.
-npm i
+- 🌐 **Works 100% Offline**  
+  No internet needed — built for rural and low-connectivity environments.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+- 🗣️ **Multilingual Support**  
+  Supports major Indian languages using Android’s Text-to-Speech (TTS) system.
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🧭 User Journey
 
-**Use GitHub Codespaces**
+1. App launches with a welcome voice message
+2. User speaks a command (e.g., “Read text”)
+3. App activates camera and begins real-time analysis
+4. AI provides voice guidance to help align the phone
+5. Result is read aloud to the user
+6. App loops back for next command or exits on request
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🎯 Target Audience
 
-This project is built with:
+- Blind or fully visually impaired individuals
+- Primarily built for users in **rural India**
+- Designed to run on **low-end Android phones (2GB+ RAM)**
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+---
 
-## How can I deploy this project?
+## 💻 Tech Stack
 
-Simply open [Lovable](https://lovable.dev/projects/93d3eda1-43c4-4bc9-b5c0-6e772109cb2a) and click on Share -> Publish.
+- **Frontend**: Kotlin / Flutter (Android)
+- **AI Models**: YOLOv8 (object detection), Tesseract OCR, Custom CNN (currency)
+- **Voice Engine**: Android TTS API
+- **Platform**: Android, Offline-first
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 🛠️ Current Status
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+> ✅ Functional Prototype Developed  
+> ✅ Voice Command & Camera Simulation via Lovable.ai  
+> 🔜 Mobile App APK in development
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
+
+## 📸 Screenshots / Demo
+
+> ![Screenshot 2025-07-06 215427](https://github.com/user-attachments/assets/df46c4ce-1929-4688-b479-4b43378a6dd8)
+
+
+---
+
+## 🤝 Contributors
+
+- 👨‍💻 Roshan Kohli – Project Lead, UI/UX, Voice Flow Design
+- 👨‍💻 Om Garg - Voice Flow   
+
+---
+
+## 📬 Contact
+
+For collaboration, feedback, or deployment queries:  
+📧 roshan.kohli@example.com  
+🌐 https://www.linkedin.com/in/roshan-kohli-a45100293/ 
+🔗 [[Prototype Website Link]](https://preview--voice-sight-app.lovable.app/)
+
+
+---
+
+> _“If you can’t see the world, let the world speak to you.”_  
+> — AI Vision Assistant
