@@ -24,7 +24,7 @@ const VoiceApp = () => {
     // Initialize speech synthesis
     synthRef.current = window.speechSynthesis;
     
-    // Initialize speech recognition
+    // Initialize speech recognition with better error handling
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
       recognitionRef.current = new SpeechRecognition();
@@ -33,7 +33,7 @@ const VoiceApp = () => {
       recognitionRef.current.lang = 'en-US';
 
       recognitionRef.current.onstart = () => {
-        console.log('Speech recognition started');
+        console.log('🎤 Speech recognition started');
         setVoiceState('listening');
         setIsListening(true);
       };
@@ -41,7 +41,7 @@ const VoiceApp = () => {
       recognitionRef.current.onresult = (event: any) => {
         const current = event.resultIndex;
         const transcriptText = event.results[current][0].transcript;
-        console.log('Speech recognized:', transcriptText);
+        console.log('🗣️ Speech recognized:', transcriptText);
         setTranscript(transcriptText);
         
         if (event.results[current].isFinal) {
@@ -50,16 +50,26 @@ const VoiceApp = () => {
       };
 
       recognitionRef.current.onerror = (event: any) => {
-        console.error('Speech recognition error:', event.error);
+        console.error('❌ Speech recognition error:', event.error);
         setIsListening(false);
         setVoiceState('idle');
+        
+        // Provide user feedback for common errors
+        if (event.error === 'not-allowed') {
+          speak("Microphone permission denied. Please allow microphone access and try again.");
+        } else if (event.error === 'no-speech') {
+          speak("No speech detected. Please try speaking again.");
+        }
       };
 
       recognitionRef.current.onend = () => {
-        console.log('Speech recognition ended');
+        console.log('🛑 Speech recognition ended');
         setIsListening(false);
         setVoiceState('idle');
       };
+    } else {
+      console.error('❌ Speech recognition not supported');
+      speak("Speech recognition is not supported in this browser. Please use Chrome, Firefox, or Safari.");
     }
 
     // Welcome message on app start
@@ -109,41 +119,48 @@ const VoiceApp = () => {
   };
 
   const handleVoiceCommand = (command: string) => {
-    console.log('Processing command:', command);
+    console.log('🎯 Processing command:', command);
     setLastCommand(command);
     setVoiceState('processing');
     
-    // Process voice commands
+    // Enhanced voice command processing with better camera integration
     if (command.includes('detect object') || command.includes('identify object') || command.includes('object detection')) {
+      console.log('📱 Switching to object detection mode');
       setMode('object');
       setShowCamera(true);
-      speak("Opening camera for object detection. Please point your camera at the object you want to identify.");
+      speak("Opening camera for object detection. Please point your camera at the object you want to identify and make sure to allow camera permissions.");
     } else if (command.includes('currency') || command.includes('money') || command.includes('note') || command.includes('bill')) {
+      console.log('💰 Switching to currency detection mode');
       setMode('currency');
       setShowCamera(true);
-      speak("Opening camera for currency detection. Please place the currency note in front of the camera and ensure good lighting.");
+      speak("Opening camera for currency detection. Please place the currency note in front of the camera, ensure good lighting, and allow camera permissions if prompted.");
     } else if (command.includes('read text') || command.includes('text') || command.includes('reading')) {
+      console.log('📖 Switching to text reading mode');
       setMode('text');
       setShowCamera(true);
-      speak("Opening camera for text reading. Please point your camera at the text you want me to read.");
+      speak("Opening camera for text reading. Please point your camera at the text you want me to read and ensure camera permissions are allowed.");
     } else if (command.includes('describe scene') || command.includes('scene') || command.includes('surroundings')) {
+      console.log('🌍 Switching to scene description mode');
       setMode('scene');
       setShowCamera(true);
-      speak("Opening camera for scene description. I will describe what I can see around you.");
+      speak("Opening camera for scene description. I will describe what I can see around you once camera permissions are granted.");
     } else if (command.includes('go back') || command.includes('home') || command.includes('main menu')) {
+      console.log('🏠 Going back to home');
       setMode('home');
       setShowCamera(false);
       setResult('');
       speak("Going back to main menu. What would you like me to help you with?");
     } else if (command.includes('help') || command.includes('what can you do')) {
       speak("I can help you with four things: detect objects, read currency notes, read printed text, and describe scenes. Just say what you need help with.");
+    } else if (command.includes('camera') && command.includes('not working')) {
+      speak("If the camera isn't working, please make sure to allow camera permissions in your browser, close other apps that might be using the camera, and try again.");
     } else {
       speak("I didn't understand that command. You can say detect object, read currency, read text, describe scene, or say help for more options.");
     }
   };
 
   const simulateAIProcessing = () => {
-    console.log('Starting AI processing for mode:', mode);
+    console.log('🤖 Starting AI processing for mode:', mode);
     setVoiceState('processing');
     setResult('Processing...');
     
@@ -152,22 +169,22 @@ const VoiceApp = () => {
       
       switch (mode) {
         case 'object':
-          aiResult = "I can see a smartphone in your hand. It appears to be a black rectangular device with a screen.";
+          aiResult = "I can see a smartphone in your hand. It appears to be a black rectangular device with a screen and appears to be in good condition.";
           break;
         case 'currency':
-          aiResult = "I detected a 100 rupee note. This is a one hundred rupee Indian currency note with security features visible.";
+          aiResult = "I detected a 100 rupee note. This is a one hundred rupee Indian currency note with Gandhi's image and security features visible.";
           break;
         case 'text':
-          aiResult = "The text reads: Welcome to our store. Opening hours are 9 AM to 8 PM Monday through Saturday.";
+          aiResult = "The text reads: Welcome to our store. We are open Monday through Saturday from 9 AM to 8 PM. Thank you for visiting us today.";
           break;
         case 'scene':
-          aiResult = "I can see you're in an indoor environment. There's a table in front of you with some items on it, and there appears to be natural light coming from a window on the left side.";
+          aiResult = "I can see you're in an indoor environment with good lighting. There appears to be a table or surface in front of you, and I can see some objects nearby. The lighting seems to be coming from natural sources.";
           break;
         default:
-          aiResult = "Processing complete.";
+          aiResult = "Processing complete. Please try again with a clear view of what you want me to analyze.";
       }
       
-      console.log('AI Result:', aiResult);
+      console.log('✅ AI Result generated:', aiResult);
       setResult(aiResult);
       speak(aiResult + " Would you like me to try again or help you with something else?");
     }, 3000);
@@ -202,13 +219,13 @@ const VoiceApp = () => {
         <div className="text-center mb-8 mt-8">
           <div className="mb-4 flex justify-center">
             <div className="relative">
-              <IconComponent className={`w-16 h-16 text-yellow-400 transition-all duration-1000 ${voiceState === 'listening' ? 'scale-110 text-yellow-300' : 'scale-100'}`} />
+              <IconComponent className={`w-16 h-16 text-blue-400 transition-all duration-1000 ${voiceState === 'listening' ? 'scale-110 text-blue-300' : 'scale-100'}`} />
               {voiceState === 'listening' && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   {[...Array(3)].map((_, ring) => (
                     <div
                       key={ring}
-                      className="absolute rounded-full border-2 border-yellow-400 animate-ping opacity-75"
+                      className="absolute rounded-full border-2 border-blue-400 animate-ping opacity-75"
                       style={{
                         width: `${80 + ring * 20}px`,
                         height: `${80 + ring * 20}px`,
@@ -229,7 +246,7 @@ const VoiceApp = () => {
           <div className="flex items-center justify-center space-x-4 mb-4">
             <div className={`flex items-center space-x-2 px-4 py-2 rounded-full backdrop-blur-sm ${
               voiceState === 'listening' ? 'bg-green-500/30 border-2 border-green-400' :
-              voiceState === 'processing' ? 'bg-yellow-500/30 border-2 border-yellow-400' :
+              voiceState === 'processing' ? 'bg-orange-500/30 border-2 border-orange-400' :
               voiceState === 'speaking' ? 'bg-blue-500/30 border-2 border-blue-400' :
               'bg-gray-500/30 border-2 border-gray-400'
             }`}>
@@ -246,8 +263,8 @@ const VoiceApp = () => {
           </div>
 
           {transcript && (
-            <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 mb-4 border border-yellow-400/30">
-              <p className="text-yellow-300 text-sm mb-1 font-semibold">You said:</p>
+            <div className="bg-black/50 backdrop-blur-sm rounded-lg p-4 mb-4 border border-blue-400/30">
+              <p className="text-blue-300 text-sm mb-1 font-semibold">You said:</p>
               <p className="text-white font-bold text-lg">"{transcript}"</p>
             </div>
           )}
@@ -255,7 +272,7 @@ const VoiceApp = () => {
 
         {/* Camera View */}
         {showCamera && (
-          <Card className="bg-black/60 backdrop-blur-sm border-2 border-yellow-400/50 mb-6">
+          <Card className="bg-black/60 backdrop-blur-sm border-2 border-blue-400/50 mb-6">
             <CardContent className="p-6">
               <CameraView onCapture={simulateAIProcessing} />
             </CardContent>
@@ -295,7 +312,7 @@ const VoiceApp = () => {
             <Button
               onClick={() => handleVoiceCommand('go back')}
               variant="outline"
-              className="border-2 border-yellow-400 text-yellow-300 hover:bg-yellow-400 hover:text-black font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105"
+              className="border-2 border-blue-400 text-blue-300 hover:bg-blue-400 hover:text-black font-bold py-4 px-8 rounded-full text-lg transition-all duration-300 hover:scale-105"
             >
               Go Back to Menu
             </Button>
@@ -308,15 +325,15 @@ const VoiceApp = () => {
             <h3 className="text-xl font-bold text-blue-200 mb-4 text-center">Voice Commands</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="space-y-2">
-                <p className="text-white font-medium"><strong className="text-yellow-300">"Detect object"</strong> - Identify objects</p>
-                <p className="text-white font-medium"><strong className="text-yellow-300">"Read currency"</strong> - Recognize money</p>
+                <p className="text-white font-medium"><strong className="text-blue-300">"Detect object"</strong> - Identify objects</p>
+                <p className="text-white font-medium"><strong className="text-blue-300">"Read currency"</strong> - Recognize money</p>
               </div>
               <div className="space-y-2">
-                <p className="text-white font-medium"><strong className="text-yellow-300">"Read text"</strong> - Read printed text</p>
-                <p className="text-white font-medium"><strong className="text-yellow-300">"Describe scene"</strong> - Describe surroundings</p>
+                <p className="text-white font-medium"><strong className="text-blue-300">"Read text"</strong> - Read printed text</p>
+                <p className="text-white font-medium"><strong className="text-blue-300">"Describe scene"</strong> - Describe surroundings</p>
               </div>
             </div>
-            <p className="text-center text-blue-200 mt-4 text-sm font-medium">Say <strong className="text-yellow-300">"help"</strong> anytime for assistance or <strong className="text-yellow-300">"go back"</strong> to return to menu</p>
+            <p className="text-center text-blue-200 mt-4 text-sm font-medium">Say <strong className="text-blue-300">"help"</strong> anytime for assistance or <strong className="text-blue-300">"go back"</strong> to return to menu</p>
           </CardContent>
         </Card>
       </div>
